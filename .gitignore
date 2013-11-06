@@ -1,3 +1,4 @@
 *.bmp
 build.sh
 read_write_bmp
+*.swp

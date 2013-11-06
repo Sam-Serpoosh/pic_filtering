@@ -6,14 +6,16 @@
 // gw
 
 // for MSVS use Win32 Console Application / Empty Project
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <string>
-#include <vector>
+#include <deque>
 #include <cmath>
 #include <ctime>
 #include <omp.h>
+
 using namespace std;
 
 #pragma pack(1)
@@ -39,14 +41,46 @@ typedef struct {
 	int num_important_colors;
 } information_type;
 
-int main(int argc, char* argv[])
-{
+void print_content(deque <deque <int> > content) {
+  int row, col;
+  for (row = 0; row < content.size(); row++) {
+    for (col = 0; col < content.size(); col++)
+      cout << content[row][col] << " ";
+    cout << endl;
+  }
+  cout << endl << endl;
+}
+
+deque <deque <int> > surround_with_zeros(deque <deque <int> > data) {
+  int height = data.size();
+  int width = data[0].size();
+
+  deque<int> top_row = deque<int>();
+  deque<int> bottom_row = deque<int>();
+  int i;
+  for (i = 0; i < width; i++) {
+    top_row.push_back(0);
+    bottom_row.push_back(0);
+  }
+  data.push_front(top_row); 
+  data.push_back(bottom_row);
+
+  int row;
+  for (row = 0; row < data.size(); row++) {
+    data[row].push_front(0);
+    data[row].push_back(0);
+  }
+
+  return data;
+}
+
+int main(int argc, char* argv[]) {
 	header_type header;
 	information_type information;
 	string imageFileName, newImageFileName;
 	unsigned char tempData[3];
 	int row, col, row_bytes, padding;
-	vector <vector <int> > data, newData;
+	deque <deque <int> > data, newData;
 
 	// prepare files
 	cout << "Original image file: ";
@@ -76,14 +110,14 @@ int main(int argc, char* argv[])
 	if (padding)
 		padding = 4 - padding;
 
-	// extract image data, initialize vectors
+	// extract image data, initialize deques 
 	// matrix 'data' contains the RED values from the image
 	// 		Note: in a grey-scale image, the RED, GREEN, and BLUE values are identical
 	// matrix 'newdata' is a zeroed-out matrix of the same size as 'data'
 	//		Note: filtered/convolved data should be placed in the matrix 'newdata'
 	for (row=0; row < information.height; row++) {
-		data.push_back (vector <int>());
-		newData.push_back (vector <int>());
+		data.push_back (deque <int>());
+		newData.push_back (deque <int>());
 		for (col=0; col < information.width; col++) {
 			imageFile.read ((char *) tempData, 3 * sizeof(unsigned char));
 			data[row].push_back ((int) tempData[0]);
@@ -94,15 +128,12 @@ int main(int argc, char* argv[])
 	}
 	cout << imageFileName << ": " << information.width << " x " << information.height << endl;
 
-
-	
+  // call surround_with_zeros here for the image data before filtering it!
 	//insert processing code here
 	for (row=0; row < information.height; row++)
 		for (col=0; col < information.width; col++)
 			newData[row][col] = data[row][col];
 
-			
-			
 	// write header to new image file
 	newImageFile.write ((char *) &header, sizeof(header_type));
 	newImageFile.write ((char *) &information, sizeof(information_type));
