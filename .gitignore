@@ -2,3 +2,4 @@
 build.sh
 read_write_bmp
 *.swp
+image_filter
