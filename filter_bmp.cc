@@ -116,8 +116,8 @@ apply_filter_on_image(int** old_image, int height, int width) {
   int* one_d_surrounded = convert_two_d_to_one_d(surrounded, 
       height + 2, width + 2);
   int* filtered_image = new int[height * width];
-  filter_on_pic(one_d_surrounded, filtered_image, sobel_filter(), 
-      height, width);
+  execute_filter_on_pic_and_time_it(one_d_surrounded, filtered_image, 
+      sobel_filter(), height, width);
 
   return convert_one_d_to_two_d(filtered_image, height, width);
 }

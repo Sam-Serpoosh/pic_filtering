@@ -5,3 +5,4 @@ read_write_bmp
 *.zip
 image_filter
 cuda/image_filter_cuda
+*.txt

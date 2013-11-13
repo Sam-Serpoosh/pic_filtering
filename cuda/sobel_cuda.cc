@@ -41,5 +41,11 @@ apply_filter_on_element(float filter[], int* original_image, int index,
 void 
 execute_filter_on_pic(int* original_image, int* filtered_image, 
     float* filter, int height, int width) {
+  struct timeval start, finish;
+  gettimeofday(&start, NULL);
   filter_on_pic(original_image, filtered_image, filter, height, width);
+  gettimeofday(&finish, NULL);
+
+  double duration = (finish.tv_usec - start.tv_usec) / 1000000.0;
+  cout << "Execution Time: " << duration << endl;
 }

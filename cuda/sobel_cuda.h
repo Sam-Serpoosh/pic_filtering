@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <sys/time.h>
 
 void filter_on_pic(int*, int*, float*, int, int);
 

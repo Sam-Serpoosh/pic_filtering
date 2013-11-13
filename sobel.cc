@@ -1,6 +1,6 @@
-#include <iostream>
-#include <cmath>
 #include "sobel.h"
+
+using namespace std;
 
 float* 
 sobel_filter() {
@@ -56,4 +56,16 @@ filter_on_pic(int* original_image, int* filtered_image,
       filtered_image[original_index] = apply_filter_on_element(filter, 
           original_image, index, surrounded_width);
   }
+}
+
+void 
+execute_filter_on_pic_and_time_it(int* original_image, int* filtered_image, 
+    float* filter, int height, int width) {
+  struct timeval start, finish;
+  gettimeofday(&start, NULL);
+  filter_on_pic(original_image, filtered_image, filter, height, width);
+  gettimeofday(&finish, NULL);
+
+  double duration = (finish.tv_usec - start.tv_usec) / 1000000.0;
+  cout << "Execution Time: " << duration << endl;
 }
