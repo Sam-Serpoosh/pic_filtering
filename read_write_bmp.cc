@@ -1,12 +1,3 @@
-// readWrite_bmp.cc
-//
-// extracts data from .bmp file
-// inserts data back into .bmp file
-//
-// gw
-
-// for MSVS use Win32 Console Application / Empty Project
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -45,7 +36,8 @@ typedef struct {
   int num_important_colors;
 } information_type;
 
-void print_content(int** content) {
+void 
+print_content(int** content) {
   for (int row = 0; row < HEIGHT; row++) {
     for (int col = 0; col < WIDTH; col++)
       cout << content[row][col] << " ";
@@ -54,7 +46,8 @@ void print_content(int** content) {
   cout << endl << endl;
 }
 
-int** surround_with_zeros(int** data, int height, int width) {
+int** 
+surround_with_zeros(int** data, int height, int width) {
   int surrounded_height = height + 2;
   int surrounded_width = width + 2;
   int** surrounded = new int*[surrounded_height];
@@ -76,7 +69,8 @@ int** surround_with_zeros(int** data, int height, int width) {
   return surrounded;
 }
 
-int** convert_deque_to_array(deque <deque <int> > data) {
+int** 
+convert_deque_to_array(deque <deque <int> > data) {
   int height = data.size();
   int width = data[0].size();
   int** data_array = new int*[height];
@@ -90,7 +84,8 @@ int** convert_deque_to_array(deque <deque <int> > data) {
   return data_array;
 }
 
-int** apply_filter_in_image_data(
+int** 
+apply_filter_on_image_data(
     int** old_image, int height, int width) {
   int** surrounded = surround_with_zeros(old_image, height, width);
   ImageFilterOperator* filter = new ImageFilterOperator(surrounded, 
@@ -98,85 +93,115 @@ int** apply_filter_in_image_data(
   return filter->filter_on_pic();
 }
 
-int main(int argc, char* argv[]) {
-  deque <deque <int> > data;
-  int** filtered_image;
-  header_type header;
-  information_type information;
-  string imageFileName, newImageFileName;
-  unsigned char tempData[3];
-  int row, col, row_bytes, padding;
-
-  // prepare files
-  cout << "Original image file: ";
-  cin >> imageFileName;
-  ifstream imageFile;
-  imageFile.open (imageFileName.c_str(), ios::binary);
-  if (!imageFile) {
-    cerr << "file not found" << endl;
-    exit(-1);
-  }
-  cout << "New image file: ";
-  cin >> newImageFileName;
-  ofstream newImageFile;
-  newImageFile.open (newImageFileName.c_str(), ios::binary);
-
-  // read file header
-  imageFile.read ((char *) &header, sizeof(header_type));
+void 
+read_image_header(ifstream& image_file, header_type& header) {
+  image_file.read ((char *) &header, sizeof(header_type));
   if (header.id[0] != 'B' || header.id[1] != 'M') {
     cerr << "Does not appear to be a .bmp file.  Goodbye." << endl;
     exit(-1);
   }
+}
 
-  // read/compute image information
-  imageFile.read ((char *) &information, sizeof(information_type));
+int 
+read_image_information_and_get_padding(
+    ifstream& image_file, information_type& information) {
+  int row_bytes, padding;
+  image_file.read ((char *) &information, sizeof(information_type));
   row_bytes = information.width * 3;
   padding = row_bytes % 4;
   if (padding)
     padding = 4 - padding;
 
-  // extract image data, initialize deques 
-  // matrix 'data' contains the RED values from the image
-  // 		Note: in a grey-scale image, the RED, GREEN, and BLUE values are identical
-  // matrix 'newdata' is a zeroed-out matrix of the same size as 'data'
-  //		Note: filtered/convolved data should be placed in the matrix 'newdata'
-  for (row=0; row < information.height; row++) {
-    data.push_back (deque <int>());
-    for (col=0; col < information.width; col++) {
-      imageFile.read ((char *) tempData, 3 * sizeof(unsigned char));
-      data[row].push_back ((int) tempData[0]);
+  return padding;
+}
+
+deque <deque <int> > 
+read_image_data(ifstream& image_file, information_type& information, 
+    unsigned char temp_data[], int padding) {
+  deque <deque <int> > image_data;
+  for (int row = 0; row < information.height; row++) {
+    image_data.push_back(deque<int>());
+    for (int col = 0; col < information.width; col++) {
+      image_file.read ((char *) temp_data, 3 * sizeof(unsigned char));
+      image_data[row].push_back ((int) temp_data[0]);
     }
     if (padding)
-      imageFile.read ((char *) tempData, padding * sizeof(unsigned char));
+      image_file.read ((char *) temp_data, 
+          padding * sizeof(unsigned char));
   }
-  cout << imageFileName << ": " << information.width << " x " << information.height << endl;
 
-  int** image_array = convert_deque_to_array(data);
-  filtered_image = apply_filter_in_image_data(image_array, information.height, 
-      information.width);
+  image_file.close();
+  return image_data;
+}
 
-  // write header to new image file
-  newImageFile.write ((char *) &header, sizeof(header_type));
-  newImageFile.write ((char *) &information, sizeof(information_type));
+void 
+write_image_header_and_info(ofstream& image_file, 
+    header_type& header, information_type& information) {
+  image_file.write ((char *) &header, sizeof(header_type));
+  image_file.write ((char *) &information, sizeof(information_type));
+}
 
-  // write new image data to new image file
-  for (row=0; row < information.height; row++) {
-    for (col=0; col < information.width; col++) {
-      tempData[0] = (unsigned char) filtered_image[row][col];
-      tempData[1] = (unsigned char) filtered_image[row][col];
-      tempData[2] = (unsigned char) filtered_image[row][col];
-      newImageFile.write ((char *) tempData, 3 * sizeof(unsigned char));
+void 
+write_image_data(ofstream& image_file, int** filtered_image, 
+    int height, int width, unsigned char temp_data[], int padding) {
+  for (int row = 0; row < height; row++) {
+    for (int col = 0; col < width; col++) {
+      temp_data[0] = (unsigned char) filtered_image[row][col];
+      temp_data[1] = (unsigned char) filtered_image[row][col];
+      temp_data[2] = (unsigned char) filtered_image[row][col];
+      image_file.write ((char *) temp_data, 
+          3 * sizeof(unsigned char));
     }
+
     if (padding) {
-      tempData[0] = 0;
-      tempData[1] = 0;
-      tempData[2] = 0;
-      newImageFile.write ((char *) tempData, padding * sizeof(unsigned char));
+      temp_data[0] = 0;
+      temp_data[1] = 0;
+      temp_data[2] = 0;
+      image_file.write((char *) temp_data, 
+          padding * sizeof(unsigned char));
     }
   }
-  cout << newImageFileName << endl;
-  imageFile.close();
-  newImageFile.close();
 
+  image_file.close();
+}
+
+int main(int argc, char* argv[]) {
+  deque <deque <int> > original_image;
+  int** filtered_image;
+  header_type header;
+  information_type information;
+  string image_filename, new_image_file_name;
+  unsigned char temp_data[3];
+  int row, col, padding;
+  ifstream image_file;
+  ofstream new_image_file;
+
+  cout << "Image file: ";
+  cin >> image_filename;
+  image_file.open (image_filename.c_str(), ios::binary);
+  if (!image_file) {
+    cerr << "file not found" << endl;
+    exit(-1);
+  }
+  cout << "New image file: ";
+  cin >> new_image_file_name;
+  new_image_file.open (new_image_file_name.c_str(), ios::binary);
+
+  read_image_header(image_file, header);
+  padding = read_image_information_and_get_padding(image_file, 
+      information);
+  original_image = read_image_data(image_file, information, 
+      temp_data, padding);
+  int** image_array = convert_deque_to_array(original_image);
+  filtered_image = apply_filter_on_image_data(image_array, 
+      information.height, information.width);
+
+  write_image_header_and_info(new_image_file, header, information);
+  write_image_data(new_image_file, filtered_image, information.height, 
+      information.width, temp_data, padding);
+
+  cout << image_filename << ": " << information.width << 
+    " x " << information.height << endl;
+  cout << new_image_file_name << endl;
   return 0;
 }
