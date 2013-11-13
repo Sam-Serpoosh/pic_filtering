@@ -37,9 +37,9 @@ typedef struct {
 } information_type;
 
 void 
-print_content(int** content) {
-  for (int row = 0; row < HEIGHT; row++) {
-    for (int col = 0; col < WIDTH; col++)
+print_content(int** content, int height, int width) {
+  for (int row = 0; row < height; row++) {
+    for (int col = 0; col < width; col++)
       cout << content[row][col] << " ";
     cout << endl;
   }
@@ -164,6 +164,20 @@ write_image_data(ofstream& image_file, int** filtered_image,
 }
 
 int main(int argc, char* argv[]) {
+  /*int** nums;
+  int height = 800; 
+  int width = 800;
+  nums = new int*[height];
+  for (int row = 0; row < height; row++)
+    nums[row] = new int[width];
+
+  for (int row = 0; row < height; row++)
+    for (int col = 0; col < width; col++)
+      nums[row][col] = col + 1;
+
+  int** result = apply_filter_on_image_data(nums, height, width);
+  print_content(result, height, width);*/
+
   deque <deque <int> > original_image;
   int** filtered_image;
   header_type header;
