@@ -88,9 +88,7 @@ int**
 apply_filter_on_image_data(
     int** old_image, int height, int width) {
   int** surrounded = surround_with_zeros(old_image, height, width);
-  ImageFilterOperator* filter = new ImageFilterOperator(surrounded, 
-      height, width);
-  return filter->filter_on_pic();
+  return filter_on_pic(surrounded, height, width);
 }
 
 void 

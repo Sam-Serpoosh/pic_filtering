@@ -3,68 +3,55 @@
 
 using namespace std;
 
-class ImageFilterOperator {
-  int** image_data;
-  int height;
-  int width;
+float* get_filter() {
+  int count = 9;
+  float* filter = new float[count]; 
+  filter[0] = 2;
+  filter[1] = 2;
+  filter[2] = 3;
 
-  public:
+  filter[3] = 2;
+  filter[4] = 1;
+  filter[5] = 3;
 
-  ImageFilterOperator(int** image_data, int height, int width) {
-    this->height = height;
-    this->width = width;
-    this->image_data = image_data;
-  }
+  filter[6] = 3;
+  filter[7] = 3;
+  filter[8] = 3;
 
-   int** filter_on_pic() {
-    float* filter = get_filter();
-    int** filtered = new int*[this->height];
-    for (int row = 0; row < this->height; row++)
-      filtered[row] = new int[this->width];
+  return filter;
+}
 
-    for(int final_x = 0; final_x < this->height; final_x++)
-      for(int final_y = 0; final_y < this->width; final_y++) {
-        int orig_x = final_x + 1;
-        int orig_y = final_y + 1;
-        filtered[final_x][final_y] = apply_filter_on_element(filter, 
-            this->image_data, orig_x, orig_y);
-      } 
+int apply_filter_on_element(float filter[], int** original, 
+    int x, int y) {
+  float element = original[x - 1][y - 1] * filter[0]
+    + original[x - 1][y] * filter [1]
+    + original[x - 1][y + 1] * filter [2]
+    + original[x][y - 1] * filter[3]
+    + original[x][y] * filter[4]
+    + original[x][y + 1] * filter[5]
+    + original[x + 1][y - 1] * filter[6]
+    + original[x + 1][y] * filter[7]
+    + original[x + 1][y + 1] * filter[8];
 
-    return filtered;
-  }
+  if (element < 0)
+    element = 0;
+  return (int)(round(element));
+}
 
-  int apply_filter_on_element(float filter[], int** original, 
-      int x, int y) {
-    float element = original[x - 1][y - 1] * filter[0]
-      + original[x - 1][y] * filter [1]
-      + original[x - 1][y + 1] * filter [2]
-      + original[x][y - 1] * filter[3]
-      + original[x][y] * filter[4]
-      + original[x][y + 1] * filter[5]
-      + original[x + 1][y - 1] * filter[6]
-      + original[x + 1][y] * filter[7]
-      + original[x + 1][y + 1] * filter[8];
+// THIS IS THE ACTUAL WORK
+int** filter_on_pic(int** image_data, int height, int width) {
+  float* filter = get_filter();
+  int** filtered = new int*[height];
+  for (int row = 0; row < height; row++)
+    filtered[row] = new int[width];
 
-    if (element < 0)
-      element = 0;
-    return (int)(round(element));
-  }
+  for(int final_x = 0; final_x < height; final_x++)
+    for(int final_y = 0; final_y < width; final_y++) {
+      int orig_x = final_x + 1;
+      int orig_y = final_y + 1;
+      filtered[final_x][final_y] = apply_filter_on_element(filter, 
+          image_data, orig_x, orig_y);
+    } 
 
-  float* get_filter() {
-    int count = 9;
-    float* filter = new float[count]; 
-    filter[0] = 2;
-    filter[1] = 2;
-    filter[2] = 3;
-
-    filter[3] = 2;
-    filter[4] = 1;
-    filter[5] = 3;
-
-    filter[6] = 3;
-    filter[7] = 3;
-    filter[8] = 3;
-
-    return filter;
-  }
-};
+  return filtered;
+}
