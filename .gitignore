@@ -6,3 +6,4 @@ read_write_bmp
 image_filter
 cuda/image_filter_cuda
 *.txt
+sobel_filter_homework.docx

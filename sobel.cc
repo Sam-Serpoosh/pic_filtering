@@ -4,8 +4,7 @@ using namespace std;
 
 float* 
 sobel_filter() {
-  int count = 9;
-  float* filter = new float[count]; 
+  float* filter = new float[9]; 
   filter[0] = 2;
   filter[1] = 2;
   filter[2] = 3;
