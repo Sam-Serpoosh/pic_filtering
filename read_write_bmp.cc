@@ -84,11 +84,42 @@ convert_deque_to_array(deque <deque <int> > data) {
   return data_array;
 }
 
+int* 
+convert_two_d_to_one_d(int** image_2d, int height, int width) {
+  int* one_d_image = new int[height * width];
+  for(int row = 0; row < height; row++)
+    for(int col = 0; col < width; col++)
+      one_d_image[row * width + col] = image_2d[row][col];
+
+  return one_d_image;
+}
+
+
 int** 
-apply_filter_on_image_data(
-    int** old_image, int height, int width) {
+convert_one_d_to_two_d(int* one_d_image, int height, int width) {
+  int** two_d = new int*[height];
+  for (int row = 0; row < height; row++)
+    two_d[row] = new int[width];
+
+  for (long index = 0; index < height * width; index++) { 
+    int row = index / width;
+    int col = index % width;
+    two_d[row][col] = one_d_image[index];
+  }
+
+  return two_d;
+}
+
+int** 
+apply_filter_on_image(int** old_image, int height, int width) {
   int** surrounded = surround_with_zeros(old_image, height, width);
-  return filter_on_pic(surrounded, height, width);
+  int* one_d_surrounded = convert_two_d_to_one_d(surrounded, 
+      height + 2, width + 2);
+  int* filtered_image = new int[height * width];
+  filter_on_pic(one_d_surrounded, filtered_image, sobel_filter(), 
+      height, width);
+
+  return convert_one_d_to_two_d(filtered_image, height, width);
 }
 
 void 
@@ -175,7 +206,7 @@ int main(int argc, char* argv[]) {
     for (int col = 0; col < width; col++)
       nums[row][col] = col + 1;
 
-  int** result = apply_filter_on_image_data(nums, height, width);
+  int** result = apply_filter_on_image(nums, height, width);
   print_content(result, height, width);*/
 
   deque <deque <int> > original_image;
@@ -204,8 +235,8 @@ int main(int argc, char* argv[]) {
       information);
   original_image = read_image_data(image_file, information, 
       temp_data, padding);
-  int** image_array = convert_deque_to_array(original_image);
-  filtered_image = apply_filter_on_image_data(image_array, 
+  int** original_image_array = convert_deque_to_array(original_image);
+  filtered_image = apply_filter_on_image(original_image_array, 
       information.height, information.width);
 
   write_image_header_and_info(new_image_file, header, information);
