@@ -1,5 +1,7 @@
 *.bmp
-build.sh
+*.sh
 read_write_bmp
 *.swp
+*.zip
 image_filter
+cuda/image_filter_cuda
