@@ -2,17 +2,28 @@
 #include <cmath>
 #include <sys/time.h>
 
-float* 
-sobel_filter();
+#define FILTER_SIZE 3
+
+const int X_FILTER[FILTER_SIZE][FILTER_SIZE] =  
+  {{1, 0, -1}, {2, 0, -2}, {1,  0, -1}};
+const int Y_FILTER[FILTER_SIZE][FILTER_SIZE] = 
+  {{1, 2, 1}, {0,  0,  0}, {-1, -2, -1}};
 
 int 
-apply_filter_on_element(float filter[], int* original_image, 
+accumulate_horizontal_sobel_result(int* original_image, 
+    int index, int width);
+
+int accumulate_vertical_sobel_result(int* original_image, 
+    int index, int width);
+
+int 
+apply_filter_on_element(int* original_image, 
     int index, int width);
 
 void 
 filter_on_pic(int* original_image, int* filtered_image, 
-    float* filter, int height, int width);
+    int height, int width);
 
 void 
-execute_filter_on_pic_and_time_it(int* original_image, int* filtered_image, 
-    float* filter, int height, int width);
+execute_filter_on_pic_and_time_it(int* original_image, 
+    int* filtered_image, int height, int width);

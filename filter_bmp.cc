@@ -8,9 +8,6 @@
 #include <omp.h>
 #include "sobel.h"
 
-#define HEIGHT 300
-#define WIDTH 300
-
 using namespace std;
 
 #pragma pack(1)
@@ -117,7 +114,7 @@ apply_filter_on_image(int** old_image, int height, int width) {
       height + 2, width + 2);
   int* filtered_image = new int[height * width];
   execute_filter_on_pic_and_time_it(one_d_surrounded, filtered_image, 
-      sobel_filter(), height, width);
+      height, width);
 
   return convert_one_d_to_two_d(filtered_image, height, width);
 }
@@ -195,20 +192,6 @@ write_image_data(ofstream& image_file, int** filtered_image,
 }
 
 int main(int argc, char* argv[]) {
-  /*int** nums;
-  int height = 800; 
-  int width = 800;
-  nums = new int*[height];
-  for (int row = 0; row < height; row++)
-    nums[row] = new int[width];
-
-  for (int row = 0; row < height; row++)
-    for (int col = 0; col < width; col++)
-      nums[row][col] = col + 1;
-
-  int** result = apply_filter_on_image(nums, height, width);
-  print_content(result, height, width);*/
-
   deque <deque <int> > original_image;
   int** filtered_image;
   header_type header;
