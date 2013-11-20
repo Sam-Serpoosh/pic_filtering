@@ -1,3 +1,4 @@
+.DS_Store
 *.bmp
 *.sh
 read_write_bmp
