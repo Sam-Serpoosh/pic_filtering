@@ -18,7 +18,11 @@ The result of the filtering and edge detection using *Sobel* algorithm for some 
 
 ![Chryseobacterium Filtered (somewhat inverted version of previous image)](http://masihjesus.files.wordpress.com/2013/11/chryseobacterium_out-bmp-1.jpg)
 
-As you can see we magnified the edges of the above images which is the goal of **Sobel Algorithm**! And the execution time for the CPU and GPU versions of implementation in milliseconds are as following:
+As you can see we magnified the edges of the above images which is the goal of **Sobel Algorithm**! 
+
+## Performance and Execution Time measurements
+
+The execution time for the CPU and GPU versions of implementation in milliseconds are as following:
 
 ```
 |    CPU     |    GPU      |        Image         |
