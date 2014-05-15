@@ -6,17 +6,17 @@ Implementing [*Sobel*](http://en.wikipedia.org/wiki/Sobel_operator) edge detecti
 
 The result of the filtering and edge detection using *Sobel* algorithm for some sample images is as following:
 
-![Cell image before filtering](http://masihjesus.files.wordpress.com/2013/11/cell-bmp.jpg)
+![Cell image before filtering](https://dl.dropboxusercontent.com/u/100502983/image_filtering_pics/cell-bmp.jpg)
 
-![Cell Image Filtered](http://masihjesus.files.wordpress.com/2013/11/cell_out-bmp.jpg)
+![Cell Image Filtered](https://dl.dropboxusercontent.com/u/100502983/image_filtering_pics/cell_out-bmp.jpg)
 
-![SestonDiatom before filtering](http://masihjesus.files.wordpress.com/2013/11/sestondiatom-bmp.jpg)
+![SestonDiatom before filtering](https://dl.dropboxusercontent.com/u/100502983/image_filtering_pics/sestondiatom-bmp.jpg)
 
-![SestonDiatom Filtered](http://masihjesus.files.wordpress.com/2013/11/sestondiatom_out-bmp.jpg)
+![SestonDiatom Filtered](https://dl.dropboxusercontent.com/u/100502983/image_filtering_pics/sestondiatom_out-bmp.jpg)
 
-![Chryseobacterium Filtered](http://masihjesus.files.wordpress.com/2013/11/chryseobacterium_out-bmp.jpg)
+![Chryseobacterium Filtered](https://dl.dropboxusercontent.com/u/100502983/image_filtering_pics/chryseobacterium_out-bmp.jpg)
 
-![Chryseobacterium Filtered (somewhat inverted version of previous image)](http://masihjesus.files.wordpress.com/2013/11/chryseobacterium_out-bmp-1.jpg)
+![Chryseobacterium Filtered (somewhat inverted version of previous image)](https://dl.dropboxusercontent.com/u/100502983/image_filtering_pics/chryseobacterium_out-bmp-1.jpg)
 
 As you can see we magnified the edges of the above images which is the goal of **Sobel Algorithm**! 
 
